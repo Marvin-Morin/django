@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if books %}
+
+<h1 class="title">Liste des livres :</h1>
+{% for book in books %}
+<ul>
+    <li>
+        <a href="/book/{{book.id}}/detail">
+            Name : {{ book.title }} <br>
+            Auteur : {{ book.author.name }}, <br>
+            Publié le : {{ book.published }}
+        </a>
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="_method" value="delete" />
+            <input type="hidden" name="id" value="{{ book.id }}" />
+            <input type="submit" id="delete" onclick="return confirm('Supprimez définitivement {{ book.title }}')"
+                value="Delete" />
+        </form>
+    </li>
+</ul>
+{% endfor %}
+
+{% else %}
+<h2>Aucun livre n'est disponible</h2>
+{% endif %}
+
+{% if user.is_authenticated %}
+
+<!-- <button>Add a book</button> -->
+
+<form method='post' class="form">
+    <fieldset>
+        <legend>Ajouter un livre</legend>
+
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Save">
+
+        {% if form.errors %}
+
+        <div class="error">
+            {% for field, errors in form.errors.items %}
+            <p><strong>{{ field }}:</strong> {{ errors|join:", " }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Display messages -->
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <span class="message {{ message.tags }}">{{ message }}</span>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </fieldset>
+</form>
+{% endif %}
+
+{% endblock %}

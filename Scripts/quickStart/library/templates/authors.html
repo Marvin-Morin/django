@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+{% if authors %}
+
+<h1 class="title">Liste des autheurs :</h1>
+
+{% for author in authors %}
+<ul>
+    <li>
+        <a href="/author/{{author.id}}">
+            {{ author.name }}
+        </a>
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="_method" value="delete" />
+            <input type="hidden" name="id" value="{{ author.id }}" />
+            <input type="submit" id="delete" onclick="return confirm('Supprimez définitivement {{ author.name }}')"
+                value="Delete" />
+        </form>
+    </li>
+</ul>
+{% endfor %}
+
+{% else %}
+<h2>Aucun auteur n'a été ajouté</h2>
+<br><br><br>
+{% endif %}
+
+<!-- BEFORE -->
+<!-- <form action="{% url 'authors' %}" method="post">
+        {% csrf_token %}
+        <fieldset>
+            <legend>Ajouter un auteur</legend>
+            <label for="name">Name :</label>
+            <input type="text" name="name" id="name">
+
+            <label for="birthdate">BirthDate :</label>
+            <input type="date" id="birthdate" name="birthdate">
+        </fieldset>
+        <input type="submit" value="Save">
+    </form> -->
+
+{% if user.is_authenticated %}
+
+<form method="post" class="form">
+    <fieldset>
+        <legend>Ajouter un auteur</legend>
+        {% csrf_token %}
+
+        <!-- Render form fields as paragraphs -->
+        {{ form.as_p }}
+
+        <!-- Custom form fields (optional) -->
+        <!-- {{ form.name.label_tag }} {{ form.name }} -->
+
+        <input type="submit" value="Add" />
+
+        <!-- Display form errors -->
+        {% if form.errors %}
+        <div class="form-errors">
+            {% for field, errors in form.errors.items %}
+            <p><strong>{{ field }}:</strong> {{ errors|join:", " }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Display messages -->
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <span class="message {{ message.tags }}">{{ message }}</span>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </fieldset>
+</form>
+{% endif %}
+
+{% endblock %}

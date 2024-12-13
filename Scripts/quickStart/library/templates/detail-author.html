@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1 class="title author-detail">Détail de l'auteur : {{ author.name }}</h1>
+
+<!-- Détails de l'auteur -->
+
+<h5 id="title_detail_author"> Author :</h5>
+<ul id="author-detail">
+    <li>Nom : {{ author.name }}</li>
+    <li>Date de naissance : {{ author.birthdate }}</li>
+</ul>
+
+<br><br>
+
+<!-- Vérifiez si l'auteur a des livres -->
+{% if author.books.count > 0 %}
+{% if author.books.count > 1 %}
+
+<h5>Books : </h5>
+
+{% else %}
+<h5>Book : </h5>
+
+{% endif %}
+
+<ul>
+    <!-- Liste des livres -->
+    {% for book in author.books.all %}
+    <li>
+        <a href="/book/{{ book.id }}/detail">
+            {{ book.title }}
+        </a>
+    </li>
+    {% endfor %}
+</ul>
+
+{% else %}
+<!-- Cas où l'auteur n'a pas de livres -->
+<h5>Aucun livre enregistré pour cet auteur</h5>
+{% endif %}
+
+
+
+<!-- Formulaire pour modifier l'auteur -->
+{% if user.is_authenticated %}
+<form method="post" class="form">
+    {% csrf_token %}
+    <fieldset>
+        <legend>Modifier cet auteur</legend>
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit">Modifier</button>
+    </fieldset>
+
+    <!-- Display messages -->
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <span class="message {{ message.tags }}">{{ message }}</span>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+</form>
+
+{% endif %}
+
+
+
+{% endblock %}

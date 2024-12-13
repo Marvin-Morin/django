@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+</head>
+<body>
+    
+    <form method="post" id="login">
+        {% csrf_token %}
+        {{ form.as_p}}
+        <input type="submit" value="Login">
+    </form>
+
+    {{ form.errors }}
+
+</body>
+</html>
